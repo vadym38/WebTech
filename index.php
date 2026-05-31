@@ -2,11 +2,22 @@
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
-header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
+
+$uri = $_SERVER['REQUEST_URI'];
+$path = parse_url($uri, PHP_URL_PATH);
+$path = trim($path, "/");
+
+if ($path === "") {
+    header('Content-Type: text/html; charset=utf-8');
+    readfile(__DIR__ . "/index.html");
+    exit();
+}
+
+header('Content-Type: application/json; charset=utf-8');
 
 $allowed = [
     "teacher",
@@ -19,9 +30,6 @@ $allowed = [
     "messages"
 ];
 
-$uri = $_SERVER['REQUEST_URI'];
-$path = parse_url($uri, PHP_URL_PATH);
-$path = trim($path, "/");
 $parts = explode("/", $path);
 $scriptIndex = array_search("index.php", $parts);
 
